@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MabinogiJumeoni</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script  src="http://code.jquery.com/jquery-latest.min.js"></script>
+<style>
+.hide {
+    display: none;
+}
+
+.color-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.color-box {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+.color-code {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.card.sticky-card {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000;  /* 다른 요소보다 위에 있도록 설정 */
+    background-color: white;  /* 스크롤할 때 배경을 흰색으로 고정 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* 살짝 그림자 효과 추가 */
+}
+
+</style>
+<script>
+
+//const API_KEY = "test_c955fe18187f95a80c1abf6099f5413976ca9bcdadb3c17d492652b8d702c28befe8d04e6d233bd35cf2fabdeb93fb0d";
+const API_KEY = "test_c955fe18187f95a80c1abf6099f541392eddf1d187655cd628f7f0bea9805241efe8d04e6d233bd35cf2fabdeb93fb0d";
+const host = "https://open.api.nexon.com";
+const urlNpc = "/mabinogi/v1/npcshop/list?";
+
+let isProcess = false;
+let isDebug = false;
+
+const npcArr = [
+      {'npcNm' : '상인 라누', 'location' : '반호르'}
+    , {'npcNm' : '상인 피루', 'location' : '벨바스트'}
+    , {'npcNm' : '상인 아루', 'location' : '카브'}
+    , {'npcNm' : '상인 누누', 'location' : '던바튼'}
+    , {'npcNm' : '상인 메루', 'location' : '이멘마하'}
+    , {'npcNm' : '상인 세누', 'location' : '스카하'}
+    , {'npcNm' : '상인 베루', 'location' : '탈틴'}
+    , {'npcNm' : '상인 에루', 'location' : '타라'}
+    , {'npcNm' : '상인 네루', 'location' : '티르'}
+    , {'npcNm' : '리나', 'location' : '코르'}
+    , {'npcNm' : '모락', 'location' : '자르딘'}
+    , {'npcNm' : '켄', 'location' : '필리아'}
+    , {'npcNm' : '귀넥', 'location' : '카루'}
+    , {'npcNm' : '얼리', 'location' : '오아시스'}
+    , {'npcNm' : '데위', 'location' : '페라'}
+    , {'npcNm' : '테일로', 'location' : '켈라'}
+    , {'npcNm' : '카디', 'location' : '발레스'}
+]
+
+const insideColorArr1 = [
+    '튼튼한 달걀 주머니'
+    , '튼튼한 감자 주머니'
+    , '튼튼한 옥수수 주머니'
+    , '튼튼한 밀 주머니'
+    , '튼튼한 보리 주머니'
+];
+
+const insideColorArr2 = ['튼튼한 양털 주머니']; //1 : 겉감, 2 : 안감,
+
+const insideColorArr3 = [
+      '튼튼한 거미줄 주머니'
+    , '튼튼한 가는 실뭉치 주머니'
+    , '튼튼한 굵은 실뭉치 주머니'
+];
+
+const insideColorArr4 = [ //1 : 겉감, 2 : 안감, 3 : 로마자
+    '튼튼한 저가형 가죽 주머니'
+    , '튼튼한 일반 가죽 주머니'
+    , '튼튼한 고급 가죽 주머니'
+    , '튼튼한 최고급 가죽 주머니'
+    , '튼튼한 저가형 옷감 주머니'
+    , '튼튼한 일반 옷감 주머니'
+    , '튼튼한 고급 옷감 주머니'
+    , '튼튼한 최고급 옷감 주머니'
+    , '튼튼한 저가형 실크 주머니'
+    , '튼튼한 일반 실크 주머니'
+    , '튼튼한 고급 실크 주머니'
+    , '튼튼한 최고급 실크 주머니'
+    ];
+
+const insideColorArr5 = ['튼튼한 꽃바구니']; //1 : 바구니, 2 : 천
+
+
+$(document).ready(function () {
+
+    function erinn_time() {
+        var curr_date = new Date();
+        var seconds_since_midnight = (curr_date.getHours() * 3600) + (curr_date.getMinutes() * 60) + curr_date.getSeconds();
+        var erinn_seconds = seconds_since_midnight % 2160;
+        var erinn_hour = Math.floor(erinn_seconds / 90);
+        var erinn_min = Math.floor((erinn_seconds % 90) / 1.5);
+
+        erinn_hour = erinn_hour.toString().padStart(2, "0");
+        erinn_min = erinn_min.toString().padStart(2, "0");
+
+        document.querySelector('#erin_time').innerText = `${erinn_hour} : ${erinn_min}`;
+    }
+
+    erinn_time();
+    setInterval(erinn_time, 3000);
+});
+
+$(document).on("change", "#imgSizeSelect", function (e) { 
+
+    let imgSize = $("#imgSizeSelect").val();
+
+    $('.itemGrid > div').each(function() {
+        $(this).removeClass(function(index, className) {
+            return (className.match(/col-lg-\d+/) || []).join(' ');
+        }).addClass('col-lg-' + imgSize);
+    });
+
+});
+
+$(document).on('click', '.toggle-color-wrap', function() {
+    $(this).next('.color-wrap').slideToggle();  // 버튼의 다음 요소인 .color-wrap을 슬라이드 토글
+});
+
+$(document).on('change', '#colorInput', function (e) { 
+    $("#searchInput").val(this.value);
+});
+
+//검색
+$(document).on('click', '#searchBtn', async function (e) { 
+
+    if (isProcess) {
+        alert("api가 실행중입니다. 잠시후 시도해주세요.");
+        return false;
+    }
+
+    isProcess = true;
+
+    let channel = $("#channelSelect").val();
+    await fn_getApiData(channel);
+
+    isProcess = false;
+
+});
+
+//전채널검색
+$(document).on('click', '#searchAllBtn', async function (e) { 
+
+    if (isProcess) {
+        alert("api가 실행중입니다. 잠시후 시도해주세요.");
+        return false;
+    }
+
+    isProcess = true;
+
+    for (let index = 1; index < 16; index++) {
+        if (index != 11) {
+            let channel = index;
+            if (! await fn_getApiData(channel)) return false;
+        }
+    }
+
+    isProcess = false;
+});
+
+//전체npc검색
+$(document).on('click', '#searchAllNpcBtn', async function (e) { 
+    e.preventDefault();
+
+    const channel = $("#channelSelect").val();
+    const npcCnt = $("#npcSelect option").size();
+
+    for (let index = 1; index < npcCnt; index++) {
+        const npcName = $("#npcSelect option").eq(index).val();
+        if (! await fn_getApiData(channel, npcName)) return false;
+    }
+});
+
+// get api
+async function fn_getApiData(channel, npcNameParam) {
+    const npcName = npcNameParam || $("#npcSelect").val();
+    const serverName = $("#serverSelect").val();
+    const urlString = `${host}${urlNpc}npc_name=${npcName}&server_name=${serverName}&channel=${channel}`;
+
+    try {
+        const response = await fetch(urlString, {
+            headers: {
+                "x-nxopen-api-key": API_KEY
+            }
+        });
+
+        if (!response.ok) throw new Error("API 응답없음! 잠시후 시도해주세요.");
+
+        const data = await response.json();
+
+        if (isDebug) console.log(data);
+
+        await fn_setImg(data, channel, npcName);
+
+        return true;
+
+    } catch (error) {
+        alert("API 응답없음! 잠시후 시도해주세요.");
+        console.log(error);
+        isProcess = false;
+        return false;
+    }
+}
+
+//주머니 box 생성
+async function fn_setImg(data, channel, npcNameParam) {
+
+    const serverName = $("#serverSelect").val();
+    const imgSize = $("#imgSizeSelect").val();
+    const npcName = npcNameParam || $("#npcSelect").val();
+    const npc = npcArr.find(npc => npc.npcNm === npcName);
+    const npcLocation = npc.location;
+    const subText = `<h5><mark>${serverName} ${npcName}(${npcLocation}) ${channel}채 </mark></h5>`;
+
+    const itemGrid = $("<div></div>").addClass("itemGrid row");
+    $(itemGrid).append(subText);
+
+    const juObj = data.shop.find(item => item.tab_name === "주머니");
+    if (!juObj) return;
+
+    const juArr = juObj.item;
+
+    const htmlArray = [];
+
+    juArr.forEach(element => {
+        const imageUrlStr = element.image_url;
+        const itemNm = element.item_display_name;
+        const imageUrl = new URL(imageUrlStr);
+        const urlParamObj = JSON.parse(decodeURIComponent(imageUrl.searchParams.get("item_color")));
+
+        let colorHtml = '';
+        let insideColor = '';
+        let outsideColor = '';
+
+        //컬러코드 세팅
+        $.each(urlParamObj, (key, value) => {
+            
+            const rgbCd = hexToRgb(value);
+            const keyStr = key.replace('color_', '');
+            let keyText = `${keyStr}`;
+
+            if (keyStr == '01') {
+                outsideColor = value;
+
+                if (insideColorArr1.includes(itemNm)) {
+                    keyText += '(겉감)';
+                } else if (insideColorArr2.includes(itemNm)) {
+                    keyText += '(겉감)';
+                } else if (insideColorArr3.includes(itemNm)) {
+                    keyText += '(겉감)';
+                } else if (insideColorArr4.includes(itemNm)) {
+                    keyText += '(겉감)';
+                } else if (insideColorArr5.includes(itemNm)) {
+                    keyText += '(바구니)';
+                }
+
+            } else if (keyStr == '02') {
+
+                if (insideColorArr1.includes(itemNm)) {
+                    insideColor = value;
+                    keyText += '(끈)';
+                } else if (insideColorArr2.includes(itemNm)) {
+                    insideColor = value;
+                    keyText += '(안감)';
+                } else if (insideColorArr3.includes(itemNm)) {
+                    keyText += '(문양)';
+                } else if (insideColorArr4.includes(itemNm)) {
+                    insideColor = value;
+                    keyText += '(안감)';
+                } else if (insideColorArr5.includes(itemNm)) {
+                    insideColor = value;
+                    keyText += '(천)';
+                }
+                
+            } else if (keyStr == '03') {
+                if (insideColorArr1.includes(itemNm)) {
+                    keyText += '';
+                } else if (insideColorArr2.includes(itemNm)) {
+                    keyText += '';
+                } else if (insideColorArr3.includes(itemNm)) {
+                    insideColor = value;
+                    keyText += '(안감)';
+                } else if (insideColorArr4.includes(itemNm)) {
+                    keyText += '(로마자)';
+                } else if (insideColorArr5.includes(itemNm)) {
+                    keyText += '(꽃)';
+                }
+            } else if (keyStr == '04') {
+
+            } else if (keyStr == '05') {
+
+            } else if (keyStr == '06') {
+
+            }
+
+            if (keyStr == '01' || keyStr == '02' || keyStr == '03') {
+
+                colorHtml += `
+                    <div>
+                        <div class="color-item">
+                            <div class="color-box" style="background-color:${value}"></div>
+                            <span>${keyText} : ${value} ${rgbCd}</span>
+                        </div>
+                    </div>
+                `;
+            }
+        });
+        
+        const outsideRgbColor = hexToRgb(outsideColor);
+        const insideRgbColor = hexToRgb(insideColor);
+
+        // 템플릿 문자열로 HTML 생성
+        const itemHtml = `
+            <div class="col-lg-${imgSize} border juBox">
+                <img src="${imageUrlStr}" class="img-fluid rounded" alt="Image 1">
+                <p class="itemName">${itemNm}</p>
+                <div class="color-item">
+                    <div class="color-box outsideColor" data-color="${outsideColor}" data-rgb="${outsideRgbColor}" style="background-color:${outsideColor}"></div>
+                    <span>겉감 : ${outsideColor}</span>
+                </div>
+                <div class="color-item">
+                    <div class="color-box insideColor" data-color="${insideColor}" data-rgb="${insideRgbColor}" style="background-color:${insideColor}"></div>
+                    <span>안감 : ${insideColor}</span>
+                </div>
+                <p class="text-decoration-underline toggle-color-wrap" role="button" >[컬러상세보기]</p>
+                <div class="color-wrap" style="display:none;">
+                    ${colorHtml}
+                </div>
+            </div>`;
+
+        htmlArray.push(itemHtml);  // 생성된 HTML 조각을 배열에 추가
+    });
+
+    $(itemGrid).append(htmlArray.join(''));
+    $(".gridContainer").prepend(itemGrid);
+
+}
+
+$(document).on('input', '#searchInput', function (e) { 
+    $("#inputR,#inputG,#inputB,#inputTolerance").val('');
+});
+
+$(document).on('input', '#inputR,#inputG,#inputB,#inputTolerance', function (e) { 
+    $("#searchInput").val('');
+});
+
+//필터
+$(document).on('click', '#filterBtn', function (e) { 
+    e.preventDefault();
+
+    if ($("#searchInput").val()) {
+        fn_hexFilter();
+    } else {
+        fn_rgbFilter();
+    }
+});
+
+//필터클리어
+$(document).on('click', '#filterClearBtn', function (e) { 
+    e.preventDefault();
+    $(".juBox").show();
+    $(".itemGrid ").show();
+});
+
+function fn_hexFilter() {
+    const sideColor = $("input[name=sideColor]:checked").val() == "1" ? "outsideColor" : "insideColor";
+    const searchColorCode = $("#searchInput").val();
+
+    $("."+sideColor).each(function (index, element) {
+        if ($(element).data("color") == searchColorCode) {
+            $(element).closest(".juBox").show();
+        } else {
+            $(element).closest(".juBox").hide();
+        }
+    });
+
+    fn_hideItemGrid();
+}
+
+function fn_rgbFilter() {
+    const sideColor = $("input[name=sideColor]:checked").val() == "1" ? "outsideColor" : "insideColor";
+    const r = Number($("#inputR").val()) || 0;
+    const g = Number($("#inputG").val()) || 0;
+    const b = Number($("#inputB").val()) || 0;
+    const tolerance = Number($("#inputTolerance").val()) || 0;
+
+    $("."+sideColor).each(function (index, element) {
+        // data-rgb 속성값을 가져와서 r.g.b 형식의 문자열을 분해
+        const [divR, divG, divB] = $(element).data("rgb").split('.').map(Number);
+
+        // 각 색상 값이 오차 범위 내에 있는지 확인
+        const isWithinTolerance = (value, target) => 
+            value >= target - tolerance && value <= target + tolerance;
+
+        if (isWithinTolerance(divR, r) && isWithinTolerance(divG, g) && isWithinTolerance(divB, b)) {
+            $(element).closest(".juBox").show();
+        } else {
+            $(element).closest(".juBox").hide();
+        }
+
+    });
+
+    fn_hideItemGrid();
+}
+
+function fn_hideItemGrid() {
+    $(".itemGrid ").show();
+
+    $(".itemGrid ").each(function (index, element) {
+        var childDivs = $(this).children('.juBox');
+
+        if (childDivs.length > 0 && childDivs.filter(function() {
+            return $(this).css('display') !== 'none';
+        }).length === 0) {
+            $(this).css('display', 'none');
+        }
+    });
+}
+
+
+/**
+ * HEX 코드를 RGB 값으로 변환하는 함수
+ * @param {string} hex - 변환할 HEX 코드 (예: '#FFFFFF' 또는 'FFFFFF')
+ * @returns {object} r, g, b 값을 포함하는 객체
+ */
+ function hexToRgb(hex) {
+    // # 문자가 포함된 경우 제거
+    hex = hex.replace(/^#/, '');
+
+    // 3자리 HEX를 6자리 HEX로 확장
+    if (hex.length === 3) {
+        hex = hex.split('').map(char => char + char).join('');
+    }
+
+    // 6자리 HEX를 각 RGB로 변환
+    const bigint = parseInt(hex, 16);
+    const r = (bigint >> 16) & 255;
+    const g = (bigint >> 8) & 255;
+    const b = bigint & 255;
+
+    return `${r}.${g}.${b}`;
+}
+
+function fn_clear() {
+    $(".gridContainer").html('');
+}
+
+function gfn_isNull(asVal) {
+    if (asVal == null) return true;
+    if (Number.isNaN(asVal)) return true;
+    if (typeof asVal === 'string' && (asVal.trim() === "" || asVal === "NaN" || asVal === "null" || asVal === "undefined")) return true;
+    if (typeof asVal === 'object' && !Array.isArray(asVal) && Object.keys(asVal).length === 0) return true;
+    if (Array.isArray(asVal) && asVal.length === 0) return true;
+    return false;
+}
+
+
+
+
+</script>
+
+</head>
+<body>
+<div class="container mt-4">
+<p>Data based on NEXON Open API</p>
+<!-- 조회 조건 박스 -->
+<div class="card p-3 mb-4 ">
+    <div class="row g-3">
+        <div class="col-md-2">
+            <label for="serverSelect" class="form-label">에린시간</label>
+            <button class="form-button" id="erin_time">00 : 00</button>
+        </div>
+        <div class="col-md-2">
+            <label for="serverSelect" class="form-label">서버</label>
+            <select name="serverSelect" id="serverSelect" class="form-select">
+                <!-- 류트, 만돌린, 하프, 울프 -->
+                <option value="류트">류트</option>
+                <option value="만돌린" selected>만돌린</option>
+                <option value="하프">하프</option>
+                <option value="울프">울프</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="npcSelect" class="form-label">NPC</label>
+            <select name="npcSelect" id="npcSelect" class="form-select">
+                <option value="상인 라누">상인 라누(반호르)</option>
+                <option value="상인 피루">상인 피루(벨바스트)</option>
+                <option value="상인 아루">상인 아루(카브)</option>
+                <option value="상인 누누" selected >상인 누누(던바튼)</option>
+                <option value="상인 메루">상인 메루(이멘마하)</option>
+                <option value="상인 세누">상인 세누(스카하)</option>
+                <option value="상인 베루">상인 베루(탈틴)</option>
+                <option value="상인 에루">상인 에루(타라)</option>
+                <option value="상인 네루">상인 네루(티르)</option>
+                <option value="리나">리나(코르)</option>
+                <option value="모락">모락(자르딘)</option>
+                <option value="켄">켄(필리아)</option>
+                <option value="귀넥">귀넥(카루)</option>
+                <option value="얼리">얼리(오아시스)</option>
+                <option value="데위">데위(페라)</option>
+                <option value="테일로">테일로(켈라)</option>
+                <option value="카디">카디(발레스)</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="channelSelect" class="form-label">채널</label>
+            <select name="channelSelect" id="channelSelect" class="form-select">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+                <option value="12">12</option>
+                <option value="13">13</option>
+                <option value="14">14</option>
+                <option value="15">15</option>
+            </select>
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-md-2">
+                <button type="button" class="btn btn-secondary w-100" onclick="fn_clear()">클리어</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-info w-100" id="searchBtn">검색</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-primary w-100" id="searchAllBtn">모든채널검색</button>
+            </div>
+            <div class="col-md-2">
+                <button type="button" class="btn btn-success w-100" id="searchAllNpcBtn">모든NPC검색</button>
+            </div>
+        </div>
+
+      
+        <div class="col-md-2 d-flex align-items-end">
+        </div>
+        <div class="col-md-2 d-flex align-items-end">
+        </div>
+    </div>
+</div>
+
+<div class="accordion card p-3 mb-4" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1" aria-expanded="false" aria-controls="collapse1">
+                검색 옵션
+            </button>
+        </h2>
+        <div id="collapse1" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+            <div class="accordion-body  p-3 mb-4">
+                <div class="row g-3">
+                    <div class="col-md-2">
+                        <label for="imgSizeSelect" class="form-label">이미지사이즈</label>
+                        <select name="imgSizeSelect" id="imgSizeSelect" class="form-select">
+                            <option value="1" selected>1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2" style="display: none;">
+                        <label for="juSelect" class="form-label">주머니종류</label>
+                        <select name="juSelect" id="juSelect" class="form-select">
+                            <option value="">선택</option>
+                            <option value="튼튼한 달걀 주머니">튼튼한 달걀 주머니</option>
+                            <option value="튼튼한 감자 주머니">튼튼한 감자 주머니</option>
+                            <option value="튼튼한 옥수수 주머니">튼튼한 옥수수 주머니</option>
+                            <option value="튼튼한 밀 주머니">튼튼한 밀 주머니</option>
+                            <option value="튼튼한 보리 주머니">튼튼한 보리 주머니</option>
+                            <option value="튼튼한 양털 주머니">튼튼한 양털 주머니</option>
+                            <option value="튼튼한 거미줄 주머니">튼튼한 거미줄 주머니</option>
+                            <option value="튼튼한 가는 실뭉치 주머니">튼튼한 가는 실뭉치 주머니</option>
+                            <option value="튼튼한 굵은 실뭉치 주머니">튼튼한 굵은 실뭉치 주머니</option>
+                            <option value="튼튼한 저가형 가죽 주머니">튼튼한 저가형 가죽 주머니</option>
+                            <option value="튼튼한 일반 가죽 주머니">튼튼한 일반 가죽 주머니</option>
+                            <option value="튼튼한 고급 가죽 주머니">튼튼한 고급 가죽 주머니</option>
+                            <option value="튼튼한 최고급 가죽 주머니">튼튼한 최고급 가죽 주머니</option>
+                            <option value="튼튼한 저가형 옷감 주머니">튼튼한 저가형 옷감 주머니</option>
+                            <option value="튼튼한 일반 옷감 주머니">튼튼한 일반 옷감 주머니</option>
+                            <option value="튼튼한 고급 옷감 주머니">튼튼한 고급 옷감 주머니</option>
+                            <option value="튼튼한 최고급 옷감 주머니">튼튼한 최고급 옷감 주머니</option>
+                            <option value="튼튼한 저가형 실크 주머니">튼튼한 저가형 실크 주머니</option>
+                            <option value="튼튼한 일반 실크 주머니">튼튼한 일반 실크 주머니</option>
+                            <option value="튼튼한 고급 실크 주머니">튼튼한 고급 실크 주머니</option>
+                            <option value="튼튼한 최고급 실크 주머니">튼튼한 최고급 실크 주머니</option>
+                            <option value="튼튼한 꽃바구니">튼튼한 꽃바구니</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="accordion card p-3 mb-4 sticky-card" id="accordionExample2">
+    <div class="accordion-item">
+        <h2 class="accordion-header">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2" aria-expanded="false" aria-controls="collapse2">
+                검색 필터
+            </button>
+        </h2>
+        <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#accordionExample2">
+            <div class="accordion-body  p-3 mb-4">
+                <div class="row g-3">
+                    <div class="col-md-2" style="display: none;">
+                        <label for="juSelect" class="form-label">주머니종류</label>
+                        <select name="juSelect" id="juSelect" class="form-select">
+                            <option value="">선택</option>
+                            <option value="튼튼한 달걀 주머니">튼튼한 달걀 주머니</option>
+                            <option value="튼튼한 감자 주머니">튼튼한 감자 주머니</option>
+                            <option value="튼튼한 옥수수 주머니">튼튼한 옥수수 주머니</option>
+                            <option value="튼튼한 밀 주머니">튼튼한 밀 주머니</option>
+                            <option value="튼튼한 보리 주머니">튼튼한 보리 주머니</option>
+                            <option value="튼튼한 양털 주머니">튼튼한 양털 주머니</option>
+                            <option value="튼튼한 거미줄 주머니">튼튼한 거미줄 주머니</option>
+                            <option value="튼튼한 가는 실뭉치 주머니">튼튼한 가는 실뭉치 주머니</option>
+                            <option value="튼튼한 굵은 실뭉치 주머니">튼튼한 굵은 실뭉치 주머니</option>
+                            <option value="튼튼한 저가형 가죽 주머니">튼튼한 저가형 가죽 주머니</option>
+                            <option value="튼튼한 일반 가죽 주머니">튼튼한 일반 가죽 주머니</option>
+                            <option value="튼튼한 고급 가죽 주머니">튼튼한 고급 가죽 주머니</option>
+                            <option value="튼튼한 최고급 가죽 주머니">튼튼한 최고급 가죽 주머니</option>
+                            <option value="튼튼한 저가형 옷감 주머니">튼튼한 저가형 옷감 주머니</option>
+                            <option value="튼튼한 일반 옷감 주머니">튼튼한 일반 옷감 주머니</option>
+                            <option value="튼튼한 고급 옷감 주머니">튼튼한 고급 옷감 주머니</option>
+                            <option value="튼튼한 최고급 옷감 주머니">튼튼한 최고급 옷감 주머니</option>
+                            <option value="튼튼한 저가형 실크 주머니">튼튼한 저가형 실크 주머니</option>
+                            <option value="튼튼한 일반 실크 주머니">튼튼한 일반 실크 주머니</option>
+                            <option value="튼튼한 고급 실크 주머니">튼튼한 고급 실크 주머니</option>
+                            <option value="튼튼한 최고급 실크 주머니">튼튼한 최고급 실크 주머니</option>
+                            <option value="튼튼한 꽃바구니">튼튼한 꽃바구니</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="sideColor" class="form-label m-1">선택</label>
+                        <div>
+                            <div class="form-check form-check-inline m-1">
+                                <input class="form-check-input" type="radio" name="sideColor" value="1" id="outsideColor" checked>
+                                <label class="form-check-label" for="outsideColor">
+                                겉감
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline m-1">
+                                <input class="form-check-input" type="radio" name="sideColor" value="2" id="insideColor" >
+                                <label class="form-check-label" for="insideColor">
+                                안감
+                                </label>
+                            </div>
+                            </div>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="searchInput" class="form-label m-1">컬러검색(#hex)</label>
+                        <input type="text" class="form-control m-1" id="searchInput"/>
+                    </div>
+                    <div class="col-md-2 ">
+                        <label for="searchInput" class="form-label m-1">컬러검색(rgb)</label>
+                        <input type="text" class="form-control m-1" id="inputR" placeholder="R">
+                        <input type="text" class="form-control m-1" id="inputG" placeholder="G">
+                        <input type="text" class="form-control m-1" id="inputB" placeholder="B">
+                    </div>
+                    <div class="col-md-2">
+                        <label for="searchInput" class="form-label m-1">rgb오차</label>
+                        <input type="text" class="form-control m-1" id="inputTolerance"/>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-md-2">
+                            <button class="btn btn-info w-100" id="filterBtn">결과내필터</button>
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-secondary w-100" id="filterClearBtn">필터클리어</button>
+                        </div>
+                    </div>
+                    <div class="col-md-2 hide">
+                        <label for="colorInput" class="form-label">Color picker</label>
+                        <input type="color" class="form-control form-control-color" id="colorInput" value="#0000" title="Choose your color">
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container gridContainer mt-4" style="font-size: x-small;">
+<!-- 검색 결과 그리드 -->
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
