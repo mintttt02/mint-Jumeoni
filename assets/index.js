@@ -436,7 +436,7 @@ function decodeUrlRgbCode(imageUrlStr) {
 
     });
 
-    console.log(resultArray);
+    //console.log(resultArray);
 
     return resultArray;
 }
