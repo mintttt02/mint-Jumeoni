@@ -1,0 +1,27 @@
+.hide {
+    display: none;
+}
+
+.color-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.color-box {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+.color-code {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+}
+
+.card.sticky-card {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    z-index: 1000;  /* 다른 요소보다 위에 있도록 설정 */
+    background-color: white;  /* 스크롤할 때 배경을 흰색으로 고정 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* 살짝 그림자 효과 추가 */
+}
