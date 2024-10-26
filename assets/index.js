@@ -221,7 +221,7 @@ async function fn_setImg(data, channel, npcNameParam) {
 
         // 템플릿 문자열로 HTML 생성
         const itemHtml = `
-            <div class="col-lg-${imgSize} border juBox">
+            <div class="col-lg-${imgSize} border juBox p-1">
                 <img src="${imageUrlStr}" class="img-fluid rounded" alt="Image 1">
                 <p class="itemName">${itemNm}</p>
                 <div class="color-item">
