@@ -254,6 +254,24 @@ $(document).on('input', '#inputR,#inputG,#inputB,#inputTolerance', function (e) 
     $("#searchInput").val('');
 });
 
+//닉네임선택
+$(document).on('change', '#nickSelect', function (e) { 
+    e.preventDefault();
+
+    if (fn_isNull($(this).val())) {
+        $("#inputR").val('');
+        $("#inputG").val('');
+        $("#inputB").val('');
+        $("#inputTolerance").val('');
+    } else {
+        const valArr = $(this).val().split(",");
+        $("#inputR").val(valArr[0]);
+        $("#inputG").val(valArr[1]);
+        $("#inputB").val(valArr[2]);
+        $("#inputTolerance").val(20);
+    }
+});
+
 //필터
 $(document).on('click', '#filterBtn', function (e) { 
     e.preventDefault();
@@ -337,13 +355,17 @@ function fn_clear() {
     $(".gridContainer").html('');
 }
 
-function gfn_isNull(asVal) {
+function fn_isNull(asVal) {
     if (asVal == null) return true;
     if (Number.isNaN(asVal)) return true;
     if (typeof asVal === 'string' && (asVal.trim() === "" || asVal === "NaN" || asVal === "null" || asVal === "undefined")) return true;
     if (typeof asVal === 'object' && !Array.isArray(asVal) && Object.keys(asVal).length === 0) return true;
     if (Array.isArray(asVal) && asVal.length === 0) return true;
     return false;
+}
+
+function fn_isNotNull(val) {
+    return !fn_isNull(val);
 }
 
 // 문자열을 가공하는 함수
