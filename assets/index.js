@@ -107,7 +107,14 @@ async function fn_getApiData(channel, npcNameParam) {
             }
         });
 
-        if (!response.ok) throw new Error("API 응답없음! 잠시후 시도해주세요.");
+        if (!response.ok) {
+            if (response.status == 429) {
+                alert("API 호출량이 초과되었습니다. 관리자에게 문의해주세요.");
+            } else {
+                alert("API 응답없음! 잠시후 시도해주세요.");
+            }
+            throw new Error();
+        }
 
         const data = await response.json();
 
@@ -118,8 +125,6 @@ async function fn_getApiData(channel, npcNameParam) {
         return true;
 
     } catch (error) {
-        alert("API 응답없음! 잠시후 시도해주세요.");
-        console.log(error);
         isProcess = false;
         return false;
     }
