@@ -268,7 +268,7 @@ $(document).on('change', '#nickSelect', function (e) {
         $("#inputR").val(valArr[0]);
         $("#inputG").val(valArr[1]);
         $("#inputB").val(valArr[2]);
-        $("#inputTolerance").val(20);
+        $("#inputTolerance").val(valArr[3]);
     }
 });
 
