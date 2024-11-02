@@ -282,7 +282,7 @@ $(document).on('click', '#filterBtn', function (e) {
     e.preventDefault();
 
     fn_rgbFilter();
-    
+    fn_findJuSet();
     $("#collapse2").removeClass("show");
 });
 
@@ -322,9 +322,9 @@ function fn_rgbFilter() {
 
 //아무것도없는 목록 숨기기
 function fn_hideItemGrid() {
-    $(".itemGrid ").show();
+    $(".itemGrid").show();
 
-    $(".itemGrid ").each(function (index, element) {
+    $(".itemGrid").each(function (index, element) {
         var childDivs = $(this).children('.juBox');
 
         if (childDivs.length > 0 && childDivs.filter(function() {
@@ -333,6 +333,40 @@ function fn_hideItemGrid() {
             $(this).css('display', 'none');
         }
     });
+}
+
+//세트찾기
+function fn_findJuSet() {
+    const hiddenItemNames = [];
+    const msgArr = [];
+    
+
+    $('.juBox').each(function() {
+        if ($(this).css('display') !== 'none') {
+            const itemName = $(this).find(".itemName").text();
+            hiddenItemNames.push(itemName);
+        }
+    });
+
+    // 배열의 모든 값이 hiddenItemNames에 포함되어 있는지 검사하는 함수
+    function isAllItemsInArrayDisplayed(juSetArr, arrayName) {
+        const allFound = juSetArr.every(item => hiddenItemNames.includes(item));
+        if (allFound) {
+            msgArr.push(arrayName);
+        }
+    }
+
+    // 각 배열에 대해 검사 실행
+    isAllItemsInArrayDisplayed(juSetArr1, '가죽');
+    isAllItemsInArrayDisplayed(juSetArr2, '옷감');
+    isAllItemsInArrayDisplayed(juSetArr3, '실크');
+    isAllItemsInArrayDisplayed(insideColorArr1, '작물');
+    isAllItemsInArrayDisplayed(insideColorArr3, '방직');
+
+    if (fn_isNotNull(msgArr)) {
+        const msg = msgArr.join(', ');
+        alert(`필터링 결과 [${msg}]주머니 세트가 완성되었습니다.`);
+    }
 }
 
 
