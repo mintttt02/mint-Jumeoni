@@ -282,6 +282,8 @@ $(document).on('click', '#filterBtn', function (e) {
     e.preventDefault();
 
     fn_rgbFilter();
+    
+    $("#collapse2").removeClass("show");
 });
 
 //필터클리어
@@ -318,6 +320,7 @@ function fn_rgbFilter() {
     fn_hideItemGrid();
 }
 
+//아무것도없는 목록 숨기기
 function fn_hideItemGrid() {
     $(".itemGrid ").show();
 

@@ -2,8 +2,8 @@
  * https://mabinogi.nexon.com/page/news/notice_view.asp?id=4892277
  */
 
-// const API_KEY = "test_c955fe18187f95a80c1abf6099f541392eddf1d187655cd628f7f0bea9805241efe8d04e6d233bd35cf2fabdeb93fb0d";
-const API_KEY = "test_c955fe18187f95a80c1abf6099f5413997344f5ac5f84085efba687c57ae97f3efe8d04e6d233bd35cf2fabdeb93fb0d";
+const API_KEY = "test_c955fe18187f95a80c1abf6099f541392eddf1d187655cd628f7f0bea9805241efe8d04e6d233bd35cf2fabdeb93fb0d";
+//const API_KEY = "test_c955fe18187f95a80c1abf6099f5413997344f5ac5f84085efba687c57ae97f3efe8d04e6d233bd35cf2fabdeb93fb0d";
 
 const host = "https://open.api.nexon.com";
 const urlNpc = "/mabinogi/v1/npcshop/list?";
@@ -65,3 +65,22 @@ const insideColorArr4 = [ //1 : 겉감, 2 : 안감, 3 : 로마자
 ];
 
 const insideColorArr5 = ['튼튼한 꽃바구니']; //1 : 바구니, 2 : 천
+
+const juSetArr1 = [
+  '튼튼한 저가형 가죽 주머니'
+, '튼튼한 일반 가죽 주머니'
+, '튼튼한 고급 가죽 주머니'
+, '튼튼한 최고급 가죽 주머니'
+];
+const juSetArr2 = [
+  '튼튼한 저가형 옷감 주머니'
+, '튼튼한 일반 옷감 주머니'
+, '튼튼한 고급 옷감 주머니'
+, '튼튼한 최고급 옷감 주머니'
+];
+const juSetArr3 = [
+  '튼튼한 저가형 실크 주머니'
+, '튼튼한 일반 실크 주머니'
+, '튼튼한 고급 실크 주머니'
+, '튼튼한 최고급 실크 주머니'
+];
