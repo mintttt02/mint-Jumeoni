@@ -283,7 +283,7 @@ $(document).on('click', '#filterBtn', function (e) {
 
     fn_rgbFilter();
     fn_findJuSet();
-    $("#collapse2").removeClass("show");
+    //$("#collapse2").removeClass("show");
 });
 
 //필터클리어
@@ -291,7 +291,7 @@ $(document).on('click', '#filterClearBtn', function (e) {
     e.preventDefault();
     $(".juBox").show();
     $(".itemGrid ").show();
-    
+
     $("#inputR").val('');
     $("#inputG").val('');
     $("#inputB").val('');
