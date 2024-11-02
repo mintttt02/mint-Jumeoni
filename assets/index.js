@@ -291,6 +291,12 @@ $(document).on('click', '#filterClearBtn', function (e) {
     e.preventDefault();
     $(".juBox").show();
     $(".itemGrid ").show();
+    
+    $("#inputR").val('');
+    $("#inputG").val('');
+    $("#inputB").val('');
+    $("#inputTolerance").val('');
+
 });
 
 
