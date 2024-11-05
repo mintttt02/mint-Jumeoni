@@ -24,7 +24,7 @@ const npcArr = [
     , {'npcNm' : '상인 에루', 'location' : '타라'}
     , {'npcNm' : '상인 네루', 'location' : '티르'}
     , {'npcNm' : '리나'     , 'location' : '코르'}
-    , {'npcNm' : '모락'     , 'location' : '자르딘'}
+    , {'npcNm' : '모락'     , 'location' : '칼리다'}
     , {'npcNm' : '켄'       , 'location' : '필리아'}
     , {'npcNm' : '귀넥'     , 'location' : '카루'}
     , {'npcNm' : '얼리'     , 'location' : '오아시스'}
