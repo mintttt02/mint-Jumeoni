@@ -138,7 +138,7 @@ async function fn_setImg(data, channel, npcNameParam) {
     const npcName = npcNameParam || $("#npcSelect").val();
     const npc = npcArr.find(npc => npc.npcNm === npcName);
     const npcLocation = npc.location;
-    const subText = `<h5><mark>${serverName} ${npcName}(${npcLocation}) ${channel}채 </mark></h5>`;
+    const subText = `<h5><mark> ${npcLocation} : ${npcName} ${channel}채 </mark></h5>`;
 
     const itemGrid = $("<div></div>").addClass("itemGrid row");
     $(itemGrid).append(subText);
