@@ -2,6 +2,15 @@ let isProcess = false;
 let isDebug = false;
 let colorJsonObj = {};
 
+// 스크롤 이벤트를 감지하여 버튼 표시 여부 결정
+$(window).scroll(function() {
+    if ($(this).scrollTop() > 100) { // 스크롤이 100px 이상 내려갔을 때
+        $('#scrollToTopBtn').fadeIn(); // 버튼 나타남
+    } else {
+        $('#scrollToTopBtn').fadeOut(); // 버튼 감춤
+    }
+});
+
 $(document).ready(function () {
 
     getColorData();
@@ -26,6 +35,12 @@ $(document).ready(function () {
 
     erinn_time();
     setInterval(erinn_time, 3000);
+
+    // 버튼 클릭 시 스크롤 최상단으로 이동
+    $('#scrollToTopBtn').click(function() {
+        $('html, body').animate({ scrollTop: 0 }, '300'); // 300ms 동안 부드럽게 스크롤
+        return false;
+    });
 });
 
 $(document).on("change", "#imgSizeSelect", function (e) { 

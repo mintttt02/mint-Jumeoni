@@ -25,3 +25,42 @@
     background-color: white;  /* 스크롤할 때 배경을 흰색으로 고정 */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  /* 살짝 그림자 효과 추가 */
 }
+
+#scrollToTopBtn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none; /* 스크롤 일정 수준 내려가면 나타나도록 초기 상태는 감춤 */
+    z-index: 99;
+    color: white;
+}
+
+.mint {
+    background-color: rgb(120, 200, 187);
+    color: white;
+}
+
+.sky {
+    background-color: rgb(157,214,231);
+}
+
+.green {
+    background-color: rgb(3,52,40);
+    color: white;
+
+}
+
+.purple {
+    background-color: rgb(54,0,72);
+    color: white;
+}
+
+.blue {
+    background-color: rgb(0,0,73);
+    color: white;
+}
+
+mark {
+    background-color: rgb(120, 200, 187);
+    color: white;
+}
