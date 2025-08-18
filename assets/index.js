@@ -1,5 +1,5 @@
 let isProcess = false;
-let isDebug = false;
+let isDebug = true;
 let colorJsonObj = {};
 
 // 스크롤 이벤트를 감지하여 버튼 표시 여부 결정
@@ -165,101 +165,126 @@ async function fn_setImg(data, channel, npcNameParam) {
 
     const htmlArray = [];
 
-    juArr.forEach(element => {
-        const imageUrlStr = element.image_url;
-        const itemNm = element.item_display_name;
-        const imageUrl = new URL(imageUrlStr);
+    try {
 
-        const rgbArr = decodeUrlRgbCode(imageUrlStr);
+        juArr.forEach(element => {
+            let colorHtml = '';
+            let insideColor = '';
+            let outsideColor = '';
 
-        let colorHtml = '';
-        let insideColor = '';
-        let outsideColor = '';
+            const imageUrlStr = element.image_url;
+            const itemNm = element.item_display_name;
 
-        //컬러코드 세팅
-        rgbArr.forEach((value, index) => {
+            const optionArr = element.item_option;
+            optionArr.forEach(op => {
 
-            let keyText = `${index+1} : `;
+                let opSubType = op.option_sub_type; //파트 A, 파트 B
+                const opVal = op.option_value; //rgb
 
-            if (index == 0) {
-                outsideColor = value;
+                if (opSubType == '파트 A') { //겉감
+                    outsideColor = opVal;
 
-                if (insideColorArr1.includes(itemNm)) {
-                    keyText += '(겉감)';
-                } else if (insideColorArr2.includes(itemNm)) {
-                    keyText += '(겉감)';
-                } else if (insideColorArr3.includes(itemNm)) {
-                    keyText += '(겉감)';
-                } else if (insideColorArr4.includes(itemNm)) {
-                    keyText += '(겉감)';
-                } else if (insideColorArr5.includes(itemNm)) {
-                    keyText += '(바구니)';
+                    if (insideColorArr1.includes(itemNm)) {
+                        opSubType += '(겉감)';
+                    } else if (insideColorArr2.includes(itemNm)) {
+                        opSubType += '(겉감)';
+                    } else if (insideColorArr3.includes(itemNm)) {
+                        opSubType += '(겉감)';
+                    } else if (insideColorArr4.includes(itemNm)) {
+                        opSubType += '(겉감)';
+                    } else if (insideColorArr5.includes(itemNm)) {
+                        opSubType += '(바구니)';
+                    } else if (insideColorArr6.includes(itemNm)) {
+                        opSubType += '(겉감)';
+                    } else if (insideColorArr7.includes(itemNm)) {
+                        opSubType += '(겉감)';
+                    }
+
+                } else if (opSubType == '파트 B') {
+
+                    if (insideColorArr1.includes(itemNm)) {
+                        insideColor = opVal;
+                        opSubType += '(끈)';
+                    } else if (insideColorArr2.includes(itemNm)) {
+                        insideColor = opVal;
+                        opSubType += '(안감)';
+                    } else if (insideColorArr3.includes(itemNm)) {
+                        opSubType += '(문양)';
+                    } else if (insideColorArr4.includes(itemNm)) {
+                        insideColor = opVal;
+                        opSubType += '(안감)';
+                    } else if (insideColorArr5.includes(itemNm)) {
+                        insideColor = opVal;
+                        opSubType += '(천)';
+                    } else if (insideColorArr6.includes(itemNm)) {
+                        opSubType += '(끈)';
+                    } else if (insideColorArr7.includes(itemNm)) {
+                        opSubType += '(끈)';
+                    }
+
+                } else if (opSubType == '파트 C') {
+
+                    if (insideColorArr1.includes(itemNm)) {
+                        opSubType += '';
+                    } else if (insideColorArr2.includes(itemNm)) {
+                        opSubType += '';
+                    } else if (insideColorArr3.includes(itemNm)) {
+                        insideColor = opVal;
+                        opSubType += '(안감)';
+                    } else if (insideColorArr4.includes(itemNm)) {
+                        opSubType += '(로마자)';
+                    } else if (insideColorArr5.includes(itemNm)) {
+                        opSubType += '(꽃)';
+                    } else if (insideColorArr6.includes(itemNm)) {
+                        opSubType += '(테두리)';
+                    } else if (insideColorArr7.includes(itemNm)) {
+                        opSubType += '(테두리)';
+                    }
+
+                } else if (opSubType == '파트 D') {
+                    
                 }
-            } else if (index == 1) {
-                if (insideColorArr1.includes(itemNm)) {
-                    insideColor = value;
-                    keyText += '(끈)';
-                } else if (insideColorArr2.includes(itemNm)) {
-                    insideColor = value;
-                    keyText += '(안감)';
-                } else if (insideColorArr3.includes(itemNm)) {
-                    keyText += '(문양)';
-                } else if (insideColorArr4.includes(itemNm)) {
-                    insideColor = value;
-                    keyText += '(안감)';
-                } else if (insideColorArr5.includes(itemNm)) {
-                    insideColor = value;
-                    keyText += '(천)';
-                }
-            } else {
-                if (insideColorArr1.includes(itemNm)) {
-                    keyText += '';
-                } else if (insideColorArr2.includes(itemNm)) {
-                    keyText += '';
-                } else if (insideColorArr3.includes(itemNm)) {
-                    insideColor = value;
-                    keyText += '(안감)';
-                } else if (insideColorArr4.includes(itemNm)) {
-                    keyText += '(로마자)';
-                } else if (insideColorArr5.includes(itemNm)) {
-                    keyText += '(꽃)';
-                }
-            }
 
-            colorHtml += `
-                <div>
-                    <div class="color-item">
-                        <div class="color-box" style="background-color:rgb(${value})"></div>
-                        <span>${keyText} : ${value}</span>
+                colorHtml += `
+                    <div>
+                        <div class="color-item">
+                            <div class="color-box" style="background-color:rgb(${opVal})"></div>
+                            <span>${opSubType} : ${opVal}</span>
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            });
+
+            
+
+            const outsideRgbColor = outsideColor;
+            const insideRgbColor = insideColor;
+
+            // 템플릿 문자열로 HTML 생성
+            const itemHtml = `
+                <div class="col-lg-${imgSize} border juBox p-1">
+                    <img src="${imageUrlStr}" class="img-fluid rounded" alt="Image 1">
+                    <p class="itemName">${itemNm}</p>
+                    <div class="color-item">
+                        <div class="color-box outsideColor" data-rgb="${outsideRgbColor}" style="background-color:rgb(${outsideColor})"></div>
+                        <span>겉감 : ${outsideColor}</span>
+                    </div>
+                    <div class="color-item">
+                        <div class="color-box insideColor" data-rgb="${insideRgbColor}" style="background-color:rgb(${insideColor})"></div>
+                        <span>안감 : ${insideColor}</span>
+                    </div>
+                    <p class="text-decoration-underline toggle-color-wrap" role="button" >[컬러상세보기]</p>
+                    <div class="color-wrap" /*style="display:none;"*/>
+                        ${colorHtml}
+                    </div>
+                </div>`;
+
+            htmlArray.push(itemHtml);  // 생성된 HTML 조각을 배열에 추가
         });
 
-        const outsideRgbColor = outsideColor;
-        const insideRgbColor = insideColor;
-
-        // 템플릿 문자열로 HTML 생성
-        const itemHtml = `
-            <div class="col-lg-${imgSize} border juBox p-1">
-                <img src="${imageUrlStr}" class="img-fluid rounded" alt="Image 1">
-                <p class="itemName">${itemNm}</p>
-                <div class="color-item">
-                    <div class="color-box outsideColor" data-rgb="${outsideRgbColor}" style="background-color:rgb(${outsideColor})"></div>
-                    <span>겉감 : ${outsideColor}</span>
-                </div>
-                <div class="color-item">
-                    <div class="color-box insideColor" data-rgb="${insideRgbColor}" style="background-color:rgb(${insideColor})"></div>
-                    <span>안감 : ${insideColor}</span>
-                </div>
-                <p class="text-decoration-underline toggle-color-wrap" role="button" >[컬러상세보기]</p>
-                <div class="color-wrap" style="display:none;">
-                    ${colorHtml}
-                </div>
-            </div>`;
-
-        htmlArray.push(itemHtml);  // 생성된 HTML 조각을 배열에 추가
-    });
+    } catch (e) {
+        console.error("에러:", e);
+    }
 
     $(itemGrid).append(htmlArray.join(''));
     $(".gridContainer").prepend(itemGrid);
