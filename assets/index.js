@@ -172,7 +172,7 @@ async function fn_setImg(data, channel, npcNameParam) {
             let insideColor = '';
             let outsideColor = '';
 
-            const imageUrlStr = element.image_url;
+            let imageUrlStr = element.image_url;
             const itemNm = element.item_display_name;
 
             const optionArr = element.item_option;
@@ -238,11 +238,11 @@ async function fn_setImg(data, channel, npcNameParam) {
                     } else if (insideColorArr6.includes(itemNm)) {
                         opSubType += '(테두리)';
                     } else if (insideColorArr7.includes(itemNm)) {
-                        opSubType += '(테두리)';
+                        opSubType += '(테두리,매듭)';
                     }
 
                 } else if (opSubType == '파트 D') {
-                    
+                    return; // 파트 D는 사용하지 않음
                 }
 
                 colorHtml += `
@@ -255,7 +255,9 @@ async function fn_setImg(data, channel, npcNameParam) {
                 `;
             });
 
-            
+            if (insideColorArr6.includes(itemNm) || insideColorArr7.includes(itemNm)) {
+                imageUrlStr = herbImg[itemNm];
+            }
 
             const outsideRgbColor = outsideColor;
             const insideRgbColor = insideColor;
