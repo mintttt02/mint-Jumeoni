@@ -265,15 +265,15 @@ async function fn_setImg(data, channel, npcNameParam) {
                 <div class="col-lg-${imgSize} border juBox p-1">
                     <img src="${imageUrlStr}" class="img-fluid rounded" alt="Image 1">
                     <p class="itemName">${itemNm}</p>
-                    <div class="color-item">
+                    <div class="color-item" style="display:none">
                         <div class="color-box outsideColor" data-rgb="${outsideRgbColor}" style="background-color:rgb(${outsideColor})"></div>
                         <span>겉감 : ${outsideColor}</span>
                     </div>
-                    <div class="color-item">
+                    <div class="color-item" style="display:none">
                         <div class="color-box insideColor" data-rgb="${insideRgbColor}" style="background-color:rgb(${insideColor})"></div>
                         <span>안감 : ${insideColor}</span>
                     </div>
-                    <p class="text-decoration-underline toggle-color-wrap" role="button" >[컬러상세보기]</p>
+                    <p class="text-decoration-underline toggle-color-wrap" role="button"  style="display:none">[컬러상세보기]</p>
                     <div class="color-wrap" /*style="display:none;"*/>
                         ${colorHtml}
                     </div>
