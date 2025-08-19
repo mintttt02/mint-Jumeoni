@@ -1,5 +1,5 @@
 let isProcess = false;
-let isDebug = true;
+let isDebug = false;
 let colorJsonObj = {};
 
 // 스크롤 이벤트를 감지하여 버튼 표시 여부 결정
@@ -54,6 +54,53 @@ $(document).on("change", "#imgSizeSelect", function (e) {
     });
 
 });
+
+$(document).on('change', '#juSelect', function (e) { 
+    e.preventDefault();
+
+    const selectedValue = $(this).val();
+    const juTypeFilterArr = [];    
+    let isAdd = true;
+
+    $("#juTypeFilter").find("p").each(function() {
+        const filterValue = $(this).text().replace(' 삭제', '');
+        if (filterValue === selectedValue) {
+            isAdd = false; // 이미 추가된 값이면 중복 추가 방지
+        }
+        juTypeFilterArr.push(filterValue);
+    });
+
+    if (!isAdd) return; // 중복된 값이면 함수 종료
+
+    $("#juTypeFilter").append(`<p>${selectedValue} <button type="button" class="btn mint w-10" onclick="fn_delJuTyleFilter(this)">삭제</button></p>`);
+    
+    fn_juTypeFilter();
+
+});
+
+function fn_delJuTyleFilter(obj) {
+    const filterText = $(obj).parent('p').text().replace(' 삭제', ''); 
+
+    $(obj).parent("p").remove(); // 필터 삭제
+
+    fn_juTypeFilter();
+}
+
+function fn_juTypeFilter() {
+
+    if ($("#juTypeFilter").children("p").length > 0) {
+
+        $(".juBox").hide(); // 모든 주머니 박스 숨김
+
+        $("#juTypeFilter").find("p").each(function() {
+            const filterValue = $(this).text().replace(' 삭제', '');
+            $(`.juBox:contains(${filterValue})`).show(); // 선택한 주머니 박스만 표시
+        });
+        
+    } else {
+        $(".juBox").show(); // 선택된 값이 없으면 모든 주머니 박스 표시
+    }
+}
 
 $(document).on('click', '.toggle-color-wrap', function() {
     $(this).next('.color-wrap').slideToggle();  // 버튼의 다음 요소인 .color-wrap을 슬라이드 토글
@@ -255,7 +302,7 @@ async function fn_setImg(data, channel, npcNameParam) {
                 `;
             });
 
-            if (insideColorArr6.includes(itemNm) || insideColorArr7.includes(itemNm)) {
+            if (fn_isNull(imageUrlStr) && (insideColorArr6.includes(itemNm) || insideColorArr7.includes(itemNm))) {
                 imageUrlStr = herbImg[itemNm];
             }
 
@@ -290,6 +337,8 @@ async function fn_setImg(data, channel, npcNameParam) {
 
     $(itemGrid).append(htmlArray.join(''));
     $(".gridContainer").prepend(itemGrid);
+
+    fn_juTypeFilter(); // 주머니 종류 필터 적용
 
 }
 
