@@ -13,27 +13,15 @@ $(window).scroll(function() {
 
 $(document).ready(function () {
 
-    getColorData();
+    //getColorData();
 
-    if (!colorJsonObj) {
-        alert("json 불러오기 실패");
-        return false;
-    }
+    // if (!colorJsonObj) {
+    //     alert("json 불러오기 실패");
+    //     return false;
+    // }
 
-    function erinn_time() {
-        var curr_date = new Date();
-        var seconds_since_midnight = (curr_date.getHours() * 3600) + (curr_date.getMinutes() * 60) + curr_date.getSeconds();
-        var erinn_seconds = seconds_since_midnight % 2160;
-        var erinn_hour = Math.floor(erinn_seconds / 90);
-        var erinn_min = Math.floor((erinn_seconds % 90) / 1.5);
+    erinn_time(); //에린시계
 
-        erinn_hour = erinn_hour.toString().padStart(2, "0");
-        erinn_min = erinn_min.toString().padStart(2, "0");
-
-        document.querySelector('#erin_time').innerText = `${erinn_hour} : ${erinn_min}`;
-    }
-
-    erinn_time();
     setInterval(erinn_time, 3000);
 
     // 버튼 클릭 시 스크롤 최상단으로 이동
@@ -41,8 +29,10 @@ $(document).ready(function () {
         $('html, body').animate({ scrollTop: 0 }, '300'); // 300ms 동안 부드럽게 스크롤
         return false;
     });
+
 });
 
+//이미지사이즈 변경
 $(document).on("change", "#imgSizeSelect", function (e) { 
 
     let imgSize = $("#imgSizeSelect").val();
@@ -55,6 +45,7 @@ $(document).on("change", "#imgSizeSelect", function (e) {
 
 });
 
+//주머니 종류 필터 선택
 $(document).on('change', '#juSelect', function (e) { 
     e.preventDefault();
 
@@ -78,6 +69,7 @@ $(document).on('change', '#juSelect', function (e) {
 
 });
 
+// 주머니 종류 필터 삭제
 function fn_delJuTyleFilter(obj) {
     const filterText = $(obj).parent('p').text().replace(' 삭제', ''); 
 
@@ -86,6 +78,7 @@ function fn_delJuTyleFilter(obj) {
     fn_juTypeFilter();
 }
 
+// 주머니 종류 필터 적용
 function fn_juTypeFilter() {
 
     if ($("#juTypeFilter").children("p").length > 0) {
@@ -464,6 +457,20 @@ function fn_findJuSet() {
         const msg = msgArr.join(', ');
         alert(`필터링 결과 [${msg}]주머니 세트가 완성되었습니다.`);
     }
+}
+
+// 에린시계
+function erinn_time() {
+    let curr_date = new Date();
+    let seconds_since_midnight = (curr_date.getHours() * 3600) + (curr_date.getMinutes() * 60) + curr_date.getSeconds();
+    let erinn_seconds = seconds_since_midnight % 2160;
+    let erinn_hour = Math.floor(erinn_seconds / 90);
+    let erinn_min = Math.floor((erinn_seconds % 90) / 1.5);
+
+    erinn_hour = erinn_hour.toString().padStart(2, "0");
+    erinn_min = erinn_min.toString().padStart(2, "0");
+
+    document.querySelector('#erin_time').innerText = `${erinn_hour} : ${erinn_min}`;
 }
 
 
